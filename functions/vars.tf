@@ -5,12 +5,12 @@ variable "bucket" {
 
 variable "project" {
   description = "my project"
-//  export TF_VAR_project=gcpssproject-235212
+//  export TF_VAR_project=your project ID
 }
 
 variable "API" {
   description = "API Key"
-//  export TF_VAR_API=688bc3704f60250be00b93ccbdbf7c9b
+//  export TF_VAR_API=your API key
 }
 
 variable "service" {
