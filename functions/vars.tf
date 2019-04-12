@@ -13,6 +13,12 @@ variable "API" {
 //  export TF_VAR_API=your API key
 }
 
+variable "ip_tf1" {
+  description = "ip_TF"
+//  export TF_VAR_ip_tf=.....
+}
+
+
 variable "service" {
   description = "service IP address"
 

@@ -24,6 +24,7 @@ variable "region" {
   default = "europe-west1"
 
 }
+variable "api_telegram" {}
 
 variable "bucket" {
   description = "my bucket"
@@ -32,8 +33,14 @@ variable "bucket" {
 
 variable "API" {
   description = "API Key"
-//  export TF_VAR_API=688bc3704f60250be00b93ccbdbf7c9b
+//  export TF_VAR_API=....
 }
+
+//variable "ip_tf" {
+//  description = "ip_tf"
+////  export TF_VAR_API=....
+//}
+
 
 ###############
 ### Modules ###
@@ -58,6 +65,9 @@ module "k8s" {
   client_certificate     = "${module.gke.client_certificate}"
   client_key             = "${module.gke.client_key}"
   cluster_ca_certificate = "${module.gke.cluster_ca_certificate}"
+  api_telegram = "${var.api_telegram}"
+//  ip_redis = "${module.k8s.ip_redis}"
+//  ip_tf1 = "${module.k8s.ip_tf1}"
 }
 
 
@@ -69,6 +79,7 @@ module "functions" {
   API = "${var.API}"
   service = "${module.k8s.ip}"
   ip_redis = "${module.k8s.ip_redis}"
+  ip_tf1 = "${module.k8s.ip_tf1}"
   MONGODB_PASSWORD = "${var.MONGODB_PASSWORD}"
   MONGODB_ROOT_PASSWORD = "${var.MONGODB_ROOT_PASSWORD}"
 }

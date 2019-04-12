@@ -126,6 +126,196 @@ resource "kubernetes_deployment" "redis-master" {
   }
 }
 
+resource "kubernetes_persistent_volume_claim" "custom-files" {
+  metadata {
+    name = "custom-files"
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    resources {
+      requests {
+        storage = "2Gi"
+      }
+    }
+
+    storage_class_name = "standard"
+  }
+}
+
+resource "kubernetes_deployment" "jupyter-notebook" {
+  metadata {
+    name = "jupyter-notebook"
+
+    labels {
+      app  = "jupyter-notebook"
+      role = "master"
+      tier = "backend"
+    }
+  }
+
+  spec {
+    replicas = 1
+
+    selector = {
+      match_labels {
+        app  = "jupyter-notebook"
+        role = "master"
+        tier = "backend"
+      }
+    }
+
+    template {
+      metadata {
+        labels {
+          app  = "jupyter-notebook"
+          role = "master"
+          tier = "backend"
+        }
+      }
+
+      spec {
+        security_context {
+          fs_group = 100
+        }
+        volume {
+          name      = "myfiles"
+        }
+        container {
+          image = "jupyter/all-spark-notebook"
+          name  = "minimal-notebook"
+
+          volume_mount {
+            mount_path = "/home/jovyan/work"
+            name       = "myfiles"
+            read_only = false
+          }
+
+          port {
+            container_port = 8888
+          }
+
+          resources {
+            requests {
+              cpu    = "100m"
+              memory = "100Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+//resource "kubernetes_deployment" "telebot" {
+//  metadata {
+//    name = "telebot"
+//
+//    labels {
+//      app  = "telebot"
+//      role = "master"
+//      tier = "backend"
+//    }
+//  }
+//
+//  spec {
+//    replicas = 1
+//
+//    selector = {
+//      match_labels {
+//        app  = "telebot"
+//        role = "master"
+//        tier = "backend"
+//      }
+//    }
+//
+//    template {
+//      metadata {
+//        labels {
+//          app  = "telebot"
+//          role = "master"
+//          tier = "backend"
+//        }
+//      }
+//
+//      spec {
+//        container {
+//          image = "denizka/telebot:v0.3"
+//          name  = "master"
+//          /*env {
+//            name  = "api_telegram"
+//            value = "${var.api_telegram}"
+//          }
+//          env {
+//            name  = "ip_redis"
+//            value = "${kubernetes_service.redis-master.load_balancer_ingress.0.ip}"
+//          }*/
+//          resources {
+//            requests {
+//              cpu    = "100m"
+//              memory = "100Mi"
+//          }}
+//        }
+//      }
+//    }
+//  }
+//}
+
+resource "kubernetes_deployment" "tf" {
+  metadata {
+    name = "tf"
+
+    labels {
+      app  = "tf"
+      role = "master"
+      tier = "backend"
+    }
+  }
+
+  spec {
+    replicas = 1
+
+    selector = {
+      match_labels {
+        app  = "tf"
+        role = "master"
+        tier = "backend"
+      }
+    }
+
+    template {
+      metadata {
+        labels {
+          app  = "tf"
+          role = "master"
+          tier = "backend"
+        }
+      }
+
+      spec {
+        container {
+          image = "yuriy6735/flask"
+          name  = "master"
+
+          port {
+            container_port = 80
+          }
+
+          resources {
+            requests {
+              cpu    = "100m"
+              memory = "100Mi"
+          }}
+        }
+      }
+    }
+  }
+}
+
+
+
 /*
 resource "kubernetes_replication_controller" "mongo-slave" {
   metadata {

@@ -12,3 +12,4 @@ variable "username" {
 }
 
 variable "password" {}
+
